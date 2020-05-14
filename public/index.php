@@ -32,4 +32,4 @@ try {
   exit;
 }
 
-echo $image->output();
+echo $image->output($chain['type']);

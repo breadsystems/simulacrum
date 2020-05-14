@@ -24,6 +24,13 @@ define('TOKEN_MAP', [
   'resize_to_best_fit'   => Build\resize_to_best_fit::class,
 ]);
 
+define('PHP_IMAGETYPE_MAP', [
+  'jpg'  => IMAGETYPE_JPEG,
+  'jpeg' => IMAGETYPE_JPEG,
+  'png'  => IMAGETYPE_PNG,
+  'gif'  => IMAGETYPE_GIF,
+]);
+
 /**
  * Takes a URI returns an array representing an abstract chain of operations.
  * @example
@@ -65,10 +72,18 @@ function parse_uri(string $uri, array $opts = []) : array {
 
   $ops = array_filter($ops, 'is_array');
 
+  $filename = basename($uri);
+  $dotPos   = strrpos($filename, '.');
+  $stub     = substr($filename, 0, $dotPos);
+  $ext      = substr($filename, $dotPos + 1);
+
   return [
     'directory' => $dir,
     'ops'       => $ops,
-    'filename'  => $segments[count($segments)-1],
+    'filename'  => $filename,
+    'stub'      => $stub,
+    'extension' => $ext,
+    'type'      => PHP_IMAGETYPE_MAP[$ext] ?? IMAGETYPE_JPEG,
   ];
 }
 
@@ -102,13 +117,30 @@ function parse_ops(array $ops, string $opStr) {
  * Gumlet\ImageResize lib
  */
 function execute(array $chain) {
-  error_log(var_export($chain,true));
   $path = sprintf(
     '%s/%s/%s',
     getenv('IMAGES_ROOT'),
     $chain['directory'] ?? '',
     $chain['filename'] ?? ''
   );
+
+  if (!file_exists($path)) {
+    $alternates = ['jpg', 'jpeg', 'png', 'gif'];
+    do {
+      $ext = array_shift($alternates);
+
+      // we already know at least one extension doesn't work...
+      if ($ext === $chain['extension']) continue;
+
+      $path = sprintf(
+        '%s/%s/%s.%s',
+        getenv('IMAGES_ROOT'),
+        $chain['directory'] ?? '',
+        $chain['stub'] ?? '',
+        $ext
+      );
+    } while (!file_exists($path) && $alternates);
+  }
 
   $image = new ImageResize($path);
 

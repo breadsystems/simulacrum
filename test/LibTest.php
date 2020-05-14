@@ -22,7 +22,39 @@ class LibTest extends TestCase {
       'directory' => 'imagez',
       'ops'       => [],
       'filename'  => 'cat.jpg',
+      'extension' => 'jpg',
+      'stub'      => 'cat',
+      'type'      => IMAGETYPE_JPEG,
     ], parse_uri('imagez/cat.jpg'));
+  }
+
+  public function testParseUriBasicExtensions() {
+    $this->assertEquals([
+      'directory' => 'imagez',
+      'ops'       => [],
+      'filename'  => 'cat.jpeg',
+      'extension' => 'jpeg',
+      'stub'      => 'cat',
+      'type'      => IMAGETYPE_JPEG,
+    ], parse_uri('imagez/cat.jpeg'));
+
+    $this->assertEquals([
+      'directory' => 'imagez',
+      'ops'       => [],
+      'filename'  => 'cat.png',
+      'extension' => 'png',
+      'stub'      => 'cat',
+      'type'      => IMAGETYPE_PNG,
+    ], parse_uri('imagez/cat.png'));
+
+    $this->assertEquals([
+      'directory' => 'imagez',
+      'ops'       => [],
+      'filename'  => 'cat.gif',
+      'extension' => 'gif',
+      'stub'      => 'cat',
+      'type'      => IMAGETYPE_GIF,
+    ], parse_uri('imagez/cat.gif'));
   }
 
   public function testParseUriBadOps() {
