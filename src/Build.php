@@ -84,7 +84,7 @@ function resizer(array $args, array $optionalArgs, string $op) : callable {
   };
 }
 
-function resize_preserving_aspect_ratio(array $tokens, string $opStr) {
+function resize(array $tokens, string $opStr) {
   $width = array_shift($tokens);
   if (!is_numeric($width)) {
     throw new ParseError(sprintf('Expected int for width, got "%s" in "%s"', $width, $opStr));

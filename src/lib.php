@@ -59,7 +59,7 @@ define('TOKEN_MAP', [
   's'     => Build\scale::class,
   'h'     => Build\resize_to_height::class,
   'w'     => Build\resize_to_width::class,
-  'r'     => Build\resize_preserving_aspect_ratio::class,
+  'r'     => Build\resize::class,
   'long'  => Build\resize_to_long_side::class,
   'short' => Build\resize_to_short_side::class,
   'fit'   => Build\resize_to_best_fit::class,
