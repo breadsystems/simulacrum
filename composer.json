@@ -1,0 +1,25 @@
+{
+    "name": "tamayo/simulacrum",
+    "description": "Open-source image manipulation service",
+    "require": {
+        "gumlet/php-image-resize": "^1.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    },
+    "authors": [
+        {
+            "name": "Coby Tamayo",
+            "email": "acobster@gmail.com"
+        }
+    ],
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "autoload": {
+        "files": ["src/lib.php", "src/Build.php"],
+        "psr-4": {
+            "Simulacrum\\": "src/"
+        }
+    }
+}

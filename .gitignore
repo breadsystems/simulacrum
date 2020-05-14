@@ -1,0 +1,4 @@
+vendor/
+.lando.local.yml
+*.cache
+phpunit.xml
