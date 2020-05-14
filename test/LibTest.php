@@ -41,6 +41,17 @@ class LibTest extends TestCase {
     ], parse_uri('imagez/c,100,200/cat.jpg'));
   }
 
+  public function testParseUriCropLonghand() {
+    $this->assertEquals([
+      'directory' => 'imagez',
+      'ops'       => [[
+        'op'      => 'crop',
+        'params'  => [100,200],
+      ]],
+      'filename'  => 'cat.jpg',
+    ], parse_uri('imagez/crop,100,200/cat.jpg'));
+  }
+
   public function testParseUriFreecrop() {
     $this->assertEquals([
       'directory' => 'imagez',
@@ -122,6 +133,17 @@ class LibTest extends TestCase {
     ], parse_uri('imagez/s,99/cat.jpg'));
   }
 
+  public function testParseUriScaleLonghand() {
+    $this->assertEquals([
+      'directory' => 'imagez',
+      'ops'       => [[
+        'op'      => 'scale',
+        'params'  => [99],
+      ]],
+      'filename'  => 'cat.jpg',
+    ], parse_uri('imagez/scale,99/cat.jpg'));
+  }
+
   public function testParseUriScaleParseError() {
     $this->expectException(ParseError::class);
     parse_uri('imagez/s,BLAH/cat.jpg');
@@ -136,6 +158,17 @@ class LibTest extends TestCase {
       ]],
       'filename'  => 'cat.jpg',
     ], parse_uri('imagez/h,100/cat.jpg'));
+  }
+
+  public function testParseUriResizeToHeightLonghand() {
+    $this->assertEquals([
+      'directory' => 'imagez',
+      'ops'       => [[
+        'op'      => 'resizeToHeight',
+        'params'  => [100],
+      ]],
+      'filename'  => 'cat.jpg',
+    ], parse_uri('imagez/resize_to_height,100/cat.jpg'));
   }
   
   public function testParseUriResizeToHeightAllowEnlarge() {
@@ -163,6 +196,17 @@ class LibTest extends TestCase {
       ]],
       'filename'  => 'cat.jpg',
     ], parse_uri('imagez/w,100/cat.jpg'));
+  }
+
+  public function testParseUriResizeToWidthLonghand() {
+    $this->assertEquals([
+      'directory' => 'imagez',
+      'ops'       => [[
+        'op'      => 'resizeToWidth',
+        'params'  => [100],
+      ]],
+      'filename'  => 'cat.jpg',
+    ], parse_uri('imagez/resize_to_width,100/cat.jpg'));
   }
   
   public function testParseUriResizeToWidthAllowEnlarge() {
