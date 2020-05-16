@@ -4,24 +4,24 @@ namespace Simulacrum;
 
 use Gumlet\ImageResize;
 
-use Simulacrum\Build;
+use Simulacrum\Ops;
 
 define('TOKEN_MAP', [
-  'c'                    => Build\crop::class,
-  'crop'                 => Build\crop::class,
-  's'                    => Build\scale::class,
-  'scale'                => Build\scale::class,
-  'w'                    => Build\resize_to_width::class,
-  'resize_to_width'      => Build\resize_to_width::class,
-  'h'                    => Build\resize_to_height::class,
-  'resize_to_height'     => Build\resize_to_height::class,
-  'r'                    => Build\resize::class,
-  'long'                 => Build\resize_to_long_side::class,
-  'resize_to_long_side'  => Build\resize_to_long_side::class,
-  'short'                => Build\resize_to_short_side::class,
-  'resize_to_short_side' => Build\resize_to_short_side::class,
-  'fit'                  => Build\resize_to_best_fit::class,
-  'resize_to_best_fit'   => Build\resize_to_best_fit::class,
+  'c'                    => Ops\crop::class,
+  'crop'                 => Ops\crop::class,
+  's'                    => Ops\scale::class,
+  'scale'                => Ops\scale::class,
+  'w'                    => Ops\resize_to_width::class,
+  'resize_to_width'      => Ops\resize_to_width::class,
+  'h'                    => Ops\resize_to_height::class,
+  'resize_to_height'     => Ops\resize_to_height::class,
+  'r'                    => Ops\resize::class,
+  'long'                 => Ops\resize_to_long_side::class,
+  'resize_to_long_side'  => Ops\resize_to_long_side::class,
+  'short'                => Ops\resize_to_short_side::class,
+  'resize_to_short_side' => Ops\resize_to_short_side::class,
+  'fit'                  => Ops\resize_to_best_fit::class,
+  'resize_to_best_fit'   => Ops\resize_to_best_fit::class,
 ]);
 
 define('PHP_IMAGETYPE_MAP', [

@@ -1,6 +1,6 @@
 <?php
 
-namespace Simulacrum\Build;
+namespace Simulacrum\Ops;
 
 use Gumlet\ImageResize;
 
