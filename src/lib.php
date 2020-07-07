@@ -61,7 +61,6 @@ function parse_uri(string $uri, array $opts = []) : array {
   // we need at least a directory and a filename
   if (count($segments) < 2) return [];
 
-  // TODO extension detection
   // TODO proper API routing
 
   $ops = array_reduce(array_slice($segments, 1, -1), parse_ops::class, []);
