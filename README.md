@@ -118,10 +118,8 @@ curl --silent -H 'x-simulacrum-key: password' --upload-file ./cat.jpg localhost:
   "success": true,
   "path": "img/cat.jpg",
   "mime_type": "image/png",
-  "dimensions": [
-    500,
-    400
-  ],
+  "width": 500,
+  "height": 400,
   "bytes": 123456,
   "new_dir": false
 }
