@@ -24,11 +24,76 @@ This will serve a version of `cat.jpg` cropped down to 300 x 300 pixels.
 
 `img.yourdomain.com` can, of course, be anything you want and will depend on your DNS setup.
 
+### Example from the CLI
+
+**NOTE:** these examples use `jq`, a [nice](https://stedolan.github.io/jq/) little command-line utility for working with JSON.
+
+```sh
+$ curl --silent --upload-file ~/Pictures/cat.png -H 'X-Simulacrum-Key: [YOUR API KEY]' \
+  'your-cdn.xyz/api?file=my-subdir/cat.png'|jq
+{
+  "success": true,
+  "path": "my-subdir/cat.png",
+  "mime_type": "image/png",
+  "width": 500,
+  "height": 400,
+  "bytes": 85547,
+  "new_dir": true
+}
+# ^ new_dir means `my-subdir` was created for you.
+# To replace an image, upload it again:
+$ curl --silent --upload-file ~/Pictures/cat.png -H 'X-Simulacrum-Key: [YOUR API KEY]' \
+  'your-cdn.xyz/api?file=my-subdir/cat.png'|jq
+{
+  "success": true,
+  "path": "my-subdir/cat.png",
+  "mime_type": "image/png",
+  "width": 500,
+  "height": 400,
+  "bytes": 85547,
+  "new_dir": false
+}
+# ^ Same request, but this time new_dir is false.
+$
+# NOTE: Subdirectories cannot contain dots:
+$ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
+  'your-cdn.xyz/api?file=a.b.c/cat.png'|jq
+{
+  "success": false,
+  "error": "Directory name cannot contain dots (\".\")"
+}
+# Now try deleting an image:
+$ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
+  'your-cdn.xyz/api?file=my/subdir/cat.png'|jq
+{
+  "success": false,
+  "error": "file path must be exactly two levels deep (dir/file.ext)"
+}
+# Whoops! You typed a / instead of a -.
+# That's OK, mistakes are part of life. Let's try again:
+$ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
+  'your-cdn.xyz/api?file=my-subdir/cat.png'|jq
+{
+  "success": true,
+  "path": "my-subdir/cat.png"
+}
+# It worked! The file was deleted and its path returned.
+# What happens if we try to delete it again?
+{
+  "success": false,
+  "error": "File does not exist or is not writeable."
+}
+```
+
+The `X-Simulacrum-Key` header should contain your API key. See **Setup**, below, for details.
+
 ### Upload API
 
 Simulacrum offers a simple REST(-ish) API for uploading and deleting images on your server. Uploading a single file and deleting a single file are the only two operations.
 
 API responses are in JSON format. The `success` property in the returned JSON object indicates whether the request succeeded or failed. On error, an `error` message will describe what went wrong.
+
+All requests require an `X-Simulacrum-Key` header containing your API key.
 
 #### Uploading a new image
 
@@ -107,6 +172,8 @@ curl --silent -H 'x-simulacrum-key: password' -XDELETE ./cat.jpg localhost:9002/
 
 ## Setup
 
+### Install the code
+
 Download the source code to your server. Make sure the `public` directory is internet-accessible.
 
 Install dependencies:
@@ -114,6 +181,8 @@ Install dependencies:
 ```
 composer install --no-dev
 ```
+
+### Create an API key
 
 Set up an API key at the _root_ of the Simulacrum repo (alongside composer.json):
 
@@ -123,13 +192,13 @@ php -r 'echo password_hash("your API key", PASSWORD_DEFAULT);' > /path/to/simula
 
 Expose the `IMAGES_ROOT` environment variable from your frontend (e.g. Nginx). This should be the absolute path to the directory where your images will be uploaded.
 
-Test it out:
+Now test it out:
 
 ```
-curl --silent -H 'x-simulacrum-key: (your API key)' --upload-file cat.gif simulacrum.yourdomain.xyz/api?file=cat.gif
+curl --silent -H 'X-Simulacrum-Key: (your API key)' --upload-file cat.gif simulacrum.yourdomain.xyz/api?file=cat.gif
 ```
 
-Distribute your key to developers you trust.
+Distribute your key to developers you trust. You're done.
 
 ### IMPORTANT RULES about directories
 
