@@ -17,9 +17,12 @@
         "test": "vendor/bin/phpunit"
     },
     "autoload": {
-        "files": ["src/lib.php", "src/Ops.php"],
+        "files": ["src/lib.php", "src/Ops.php", "src/Upload.php"],
         "psr-4": {
             "Simulacrum\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "files": ["src/util.php"]
     }
 }
