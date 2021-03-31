@@ -73,7 +73,7 @@ function resizer(array $args, array $optionalArgs, string $op) : callable {
 
       return $param;
     }, $args);
-    
+
     return [
       [
         'op'     => $op,
