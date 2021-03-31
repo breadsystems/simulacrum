@@ -28,6 +28,8 @@ This will serve a version of `cat.jpg` cropped down to 300 x 300 pixels.
 
 Simulacrum offers a simple REST(-ish) API for uploading and deleting images on your server. Uploading a single file and deleting a single file are the only two operations.
 
+API responses are in JSON format. The `success` property in the returned JSON object indicates whether the request succeeded or failed. On error, an `error` message will describe what went wrong.
+
 #### Uploading a new image
 
 ```
@@ -55,19 +57,22 @@ curl --silent -H 'x-simulacrum-key: password' --upload-file ./cat.jpg localhost:
     500,
     400
   ],
+  "bytes": 123456,
   "new_dir": false
 }
 ```
 
 ##### Result schema
 
-| Key          | Type    | Description                                                  |
-| ------------ | ------- | ------------------------------------------------------------ |
-| `success`    | Boolean | Whether or not the upload was successful.                    |
-| `path`       | String  | The new (relative) image path.                               |
-| `mime_type`  | String  | The MIME type of the uploaded image.                         |
-| `dimensions` | Array   | A two-element array consisting of `[width, height]`.         |
-| `new_dir`    | Boolean | Whether or not a new subdirectory was created as a result of this request. |
+| Key         | Type    | Description                                                  |
+| ----------- | ------- | ------------------------------------------------------------ |
+| `success`   | Boolean | Whether or not the upload was successful.                    |
+| `path`      | String  | The new (relative) image path.                               |
+| `mime_type` | String  | The MIME type of the uploaded image.                         |
+| `width`     | Integer | The width of the uploaded image, in pixels.                  |
+| `height`    | Integer | The height of the uploaded image, in pixels.                 |
+| `bytes`     | Integer | The number of bytes written to the file system.              |
+| `new_dir`   | Boolean | Whether or not a new subdirectory was created as a result of this request. |
 
 #### Deleting an image
 
