@@ -24,7 +24,7 @@ A valid request path takes the following form:
 
 - `<dir>` is a subdirectory exactly one level deep, such as `img`
 - `<op>+` is one or more image transform operations, such as `crop` or `scale`, delimited by `/`
-- `<img>` is the filename of your image
+- `<img>` is the filename of your image, such as `cat.jpg`
 
 Each `op` takes the form of `<opname>[,<arg>+]`, where `<arg>+` is one or more comma-separated arguments for the operation.
 
