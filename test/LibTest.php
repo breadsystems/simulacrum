@@ -25,6 +25,7 @@ class LibTest extends TestCase {
       'extension' => 'jpg',
       'stub'      => 'cat',
       'type'      => IMAGETYPE_JPEG,
+      'stat'      => [],
     ], parse_uri('imagez/cat.jpg'));
   }
 
@@ -36,6 +37,7 @@ class LibTest extends TestCase {
       'extension' => 'jpeg',
       'stub'      => 'cat',
       'type'      => IMAGETYPE_JPEG,
+      'stat'      => [],
     ], parse_uri('imagez/cat.jpeg'));
 
     $this->assertEquals([
@@ -45,6 +47,7 @@ class LibTest extends TestCase {
       'extension' => 'png',
       'stub'      => 'cat',
       'type'      => IMAGETYPE_PNG,
+      'stat'      => [],
     ], parse_uri('imagez/cat.png'));
 
     $this->assertEquals([
@@ -54,6 +57,7 @@ class LibTest extends TestCase {
       'extension' => 'gif',
       'stub'      => 'cat',
       'type'      => IMAGETYPE_GIF,
+      'stat'      => [],
     ], parse_uri('imagez/cat.gif'));
   }
 
