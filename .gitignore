@@ -7,3 +7,4 @@ api.key
 .direnv
 .env
 img
+dev/*.jpg
