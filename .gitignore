@@ -1,7 +1,9 @@
 vendor/
 .lando.local.yml
 *.cache
+*.db
 phpunit.xml
 api.key
 .direnv
+.env
 img

@@ -173,11 +173,11 @@ The `X-Simulacrum-Key` header should contain your API key. See **Setup**, below,
 
 ### Upload API
 
-Simulacrum offers a simple REST(-ish) API for uploading and deleting images on your server. Uploading a single file and deleting a single file are the only two operations.
+Simulacrum offers a simple REST API for uploading and deleting images on your server, as well as some barebones user management.
 
 API responses are in JSON format. The `success` property in the returned JSON object indicates whether the request succeeded or failed. On error, an `error` message will describe what went wrong.
 
-All requests require an `X-Simulacrum-Key` header containing your API key.
+All requests require Basic authentication. The directory name doubles as username.
 
 #### Uploading a new image
 
@@ -192,7 +192,7 @@ PUT /api?file=dir/file.ext
 ##### CLI example
 
 ```
-curl --silent -H 'x-simulacrum-key: password' --upload-file ./cat.jpg localhost:9002/api?file=img/cat.jpg
+curl --silent -H "Authorization: Basic $(echo img:$KEY | base64)" --upload-file ./cat.jpg localhost:9002/api?file=cat.jpg
 ```
 
 ##### Example result
@@ -233,7 +233,7 @@ DELETE /api?file=dir/file.ext
 ##### CLI example
 
 ```
-curl --silent -H 'x-simulacrum-key: password' -XDELETE ./cat.jpg localhost:9002/api?file=img/cat.jpg
+curl --silent -H "Authorization: Basic $(echo img:$KEY | base64)" -XDELETE ./cat.jpg localhost:9002/api?file=cat.jpg
 ```
 
 ##### Example result
