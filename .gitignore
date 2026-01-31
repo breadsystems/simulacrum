@@ -3,3 +3,4 @@ vendor/
 *.cache
 phpunit.xml
 api.key
+.direnv
