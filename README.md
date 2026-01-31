@@ -4,7 +4,7 @@
 >
 > *n.* That which is formed in the likeness of any object; an image.
 >
-> *n.* A simple image manipulation platform for the web
+> *n.* A simple image manipulation service for the web
 
 ## Goals
 
