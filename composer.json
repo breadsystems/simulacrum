@@ -14,7 +14,8 @@
         }
     ],
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/phpunit",
+        "simulacrum:init": "bin/init.php"
     },
     "autoload": {
         "files": ["src/lib.php", "src/Ops.php", "src/Upload.php"],
