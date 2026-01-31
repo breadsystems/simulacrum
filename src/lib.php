@@ -6,6 +6,8 @@ use Gumlet\ImageResize;
 
 use Simulacrum\Ops;
 
+define('IMAGES_ROOT', getenv('IMAGES_ROOT'));
+
 define('TOKEN_MAP', [
   'c'                    => Ops\crop::class,
   'crop'                 => Ops\crop::class,
@@ -42,7 +44,7 @@ define('PHP_IMAGETYPE_MAP', [
  * //     'op'      => 'scale',
  * //     'params'  => [50],
  * //   ], [
- * /      'op'      => 'crop',
+ * //     'op'      => 'crop',
  * //     'params'  => [100, 100],
  * //   ]],
  * //   'filename'  => 'cat.jpg'
@@ -76,6 +78,9 @@ function parse_uri(string $uri, array $opts = []) : array {
   $stub     = substr($filename, 0, $dotPos);
   $ext      = substr($filename, $dotPos + 1);
 
+  $path = sprintf('%s/%s/%s', IMAGES_ROOT, $dir, $filename);
+  $stat = is_readable($path) ? stat($path) : [];
+
   return [
     'directory' => $dir,
     'ops'       => $ops,
@@ -83,6 +88,7 @@ function parse_uri(string $uri, array $opts = []) : array {
     'stub'      => $stub,
     'extension' => $ext,
     'type'      => PHP_IMAGETYPE_MAP[$ext] ?? IMAGETYPE_JPEG,
+    'stat'      => $stat,
   ];
 }
 
@@ -118,7 +124,7 @@ function parse_ops(array $ops, string $opStr) {
 function execute(array $chain) {
   $path = sprintf(
     '%s/%s/%s',
-    getenv('IMAGES_ROOT'),
+    IMAGES_ROOT,
     $chain['directory'] ?? '',
     $chain['filename'] ?? ''
   );
@@ -133,7 +139,7 @@ function execute(array $chain) {
 
       $path = sprintf(
         '%s/%s/%s.%s',
-        getenv('IMAGES_ROOT'),
+        IMAGES_ROOT,
         $chain['directory'] ?? '',
         $chain['stub'] ?? '',
         $ext
