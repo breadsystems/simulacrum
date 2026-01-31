@@ -4,3 +4,4 @@ vendor/
 phpunit.xml
 api.key
 .direnv
+img

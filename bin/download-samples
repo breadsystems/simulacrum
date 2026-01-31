@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+IMAGES_ROOT=${IMAGES_ROOT:-'img'}
+
+mkdir -p "$IMAGES_ROOT"
+
+wget "https://upload.wikimedia.org/wikipedia/commons/6/67/Robert_Howlett_%28Isambard_Kingdom_Brunel_Standing_Before_the_Launching_Chains_of_the_Great_Eastern%29%2C_The_Metropolitan_Museum_of_Art_-_restoration1.jpg" --output-document="$IMAGES_ROOT"/howlett.jpg
+wget "https://upload.wikimedia.org/wikipedia/commons/1/16/Louis_Armstrong_in_Color_%28restored%29.jpg" --output-document="$IMAGES_ROOT"/armstrong.jpg
+wget "https://upload.wikimedia.org/wikipedia/commons/8/81/Bobines_fil_Rouffignac.jpg" --output-document="$IMAGES_ROOT"/bobbins.jpg
