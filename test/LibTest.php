@@ -162,6 +162,63 @@ class LibTest extends TestCase {
     ], parse_uri('imagez/scale,99/cat.jpg')['ops']);
   }
 
+  public function testParseUriScaleMax() {
+    $this->assertEquals([
+      [
+        'op'      => 'scale',
+        'params'  => [100],
+      ],
+    ], parse_uri('imagez/scale,101/cat.jpg')['ops']);
+
+    $this->assertEquals([
+      [
+        'op'      => 'scale',
+        'params'  => [100],
+      ],
+    ], parse_uri('imagez/scale,1000/cat.jpg')['ops']);
+
+    $this->assertEquals([
+      [
+        'op'      => 'scale',
+        'params'  => [100],
+      ],
+    ], parse_uri('imagez/scale,999999999/cat.jpg')['ops']);
+
+    // configure a larger max
+    putenv('MAX_SCALE_PERCENT=200');
+
+    $this->assertEquals([
+      [
+        'op'      => 'scale',
+        'params'  => [150],
+      ],
+    ], parse_uri('imagez/scale,150/cat.jpg')['ops']);
+
+    $this->assertEquals([
+      [
+        'op'      => 'scale',
+        'params'  => [200],
+      ],
+    ], parse_uri('imagez/scale,200/cat.jpg')['ops']);
+
+    $this->assertEquals([
+      [
+        'op'      => 'scale',
+        'params'  => [200],
+      ],
+    ], parse_uri('imagez/scale,201/cat.jpg')['ops']);
+
+    $this->assertEquals([
+      [
+        'op'      => 'scale',
+        'params'  => [200],
+      ],
+    ], parse_uri('imagez/scale,999999/cat.jpg')['ops']);
+
+    // reset env
+    putenv('MAX_SCALE_PERCENT');
+  }
+
   public function testParseUriScaleParseError() {
     $this->expectException(ParseError::class);
     parse_uri('imagez/s,BLAH/cat.jpg');

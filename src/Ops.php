@@ -54,7 +54,7 @@ function scale(array $tokens, string $opStr) {
   return [
     [
       'op'     => 'scale',
-      'params' => [$percentage],
+      'params' => [min($percentage, intval(getenv('MAX_SCALE_PERCENT') ?: 100))],
     ],
     $tokens,
   ];
