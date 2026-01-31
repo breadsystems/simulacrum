@@ -1,7 +1,9 @@
 # Simulacrum
 
 > Sim•u•la•crum
+>
 > *n.* That which is formed in the likeness of any object; an image.
+>
 > *n.* A simple image manipulation platform for the web
 
 ## Goals
@@ -14,15 +16,37 @@
 
 ### Requesting an image
 
-Request images from your Simulacrum server like so:
+A valid request path takes the following form:
 
 ```
-img.yourdomain.com/img/c,300,300/cat.jpg
+/<dir>/<op>+/<img>
 ```
 
-This will serve a version of `cat.jpg` cropped down to 300 x 300 pixels.
+- `<dir>` is a subdirectory exactly one level deep, such as `img`
+- `<op>+` is one or more image transform operations, such as `crop` or `scale`, delimited by `/`
+- `<img>` is the filename of your image
 
-`img.yourdomain.com` can, of course, be anything you want and will depend on your DNS setup.
+Each `op` takes the form of `<opname>[,<arg>+]`, where `<arg>+` is one or more comma-separated arguments for the operation.
+
+(The domain can, of course, be anything you want and will depend on your DNS setup.)
+
+#### Examples
+
+Serve a version of `img/cat.jpg` cropped down to 300 x 300 pixels:
+
+```
+/img/c,300,300/cat.jpg
+```
+
+Scale `img/cat.jpg` by 50%, then crop it down to 150 x 150 pixels:
+
+```
+/img/s,50/c,150,150/cat.jpg
+```
+
+#### Resize operations
+
+TODO
 
 ### Example from the CLI
 
@@ -210,7 +234,7 @@ You can, of course, choose a finer grain than this, too, e.g. if you have a Word
 
 ##### Subdirectories are exactly one level deep
 
-**Paths are only allowed to go one subdirectory deep** from the `IMAGES_ROOT` environment variable: images in `$IMAGES_ROOT/a/b`, for example, will be inaccessible. This is by design to keep the parsing rules for URLs as simple as possible. With exactly one subdirectory, URLs look like `/dir/[operations]+` where `[operations]+` means one or more image transforms, such as crops or scales.
+**Paths are only allowed to go one subdirectory deep** from the `IMAGES_ROOT` environment variable: images in `$IMAGES_ROOT/a/b`, for example, will be inaccessible. This is by design to keep the parsing rules for URLs as simple as possible.
 
 The API will create subdirectories in response to PUT requests to subdirectories that do not exist yet.
 
@@ -225,7 +249,9 @@ export IMAGES_ROOT=$(pwd)/dev
 php -S localhost:9001 public/index.php
 ```
 
-Run `bin/download-samples` to download a few large public-domain images from WikiMedia Commons (about 41 MB total) into `$IMAGES_ROOT` (defaults to `./img`).
+Run `bin/download-samples` to download a few large public-domain images from WikiMedia Commons (about 41 MB total) into `$IMAGES_ROOT/dev` (defaults to `./img/dev`).
+
+You can now request e.g. `http://localhost:9001/dev/w,300/bobbins.jpg` (scales the image to 300px wide).
 
 ## Running tests
 
