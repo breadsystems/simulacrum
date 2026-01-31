@@ -37,7 +37,7 @@ define('PHP_IMAGETYPE_MAP', [
  * Takes a URI returns an array representing an abstract chain of operations.
  * @example
  * ```php
- * Simulacrum\parse_uri("/img/s,50,c,100,100/cat.jpg");
+ * Simulacrum\parse_uri("/img/s,50/c,100,100/cat.jpg");
  * // -> [
  * //   'directory' => 'img',
  * //   'ops'       => [[
