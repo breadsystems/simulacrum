@@ -112,11 +112,9 @@ Scale by `min(percent, MAX_RESIZE_PERCENT)`, preserving aspect ratio. Set `MAX_R
 
 ### Example from the CLI
 
-**NOTE:** these examples use `jq`, a [nice](https://stedolan.github.io/jq/) little command-line utility for working with JSON.
-
 ```sh
 $ curl --silent --upload-file ~/Pictures/cat.png -H 'X-Simulacrum-Key: [YOUR API KEY]' \
-  'your-cdn.xyz/api?file=my-subdir/cat.png'|jq
+  'your-cdn.xyz/api?file=my-subdir/cat.png'
 {
   "success": true,
   "path": "my-subdir/cat.png",
@@ -129,7 +127,7 @@ $ curl --silent --upload-file ~/Pictures/cat.png -H 'X-Simulacrum-Key: [YOUR API
 # ^ new_dir means `my-subdir` was created for you.
 # To replace an image, upload it again:
 $ curl --silent --upload-file ~/Pictures/cat.png -H 'X-Simulacrum-Key: [YOUR API KEY]' \
-  'your-cdn.xyz/api?file=my-subdir/cat.png'|jq
+  'your-cdn.xyz/api?file=my-subdir/cat.png'
 {
   "success": true,
   "path": "my-subdir/cat.png",
@@ -143,14 +141,14 @@ $ curl --silent --upload-file ~/Pictures/cat.png -H 'X-Simulacrum-Key: [YOUR API
 $
 # NOTE: Subdirectories cannot contain dots:
 $ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
-  'your-cdn.xyz/api?file=a.b.c/cat.png'|jq
+  'your-cdn.xyz/api?file=a.b.c/cat.png'
 {
   "success": false,
   "error": "Directory name cannot contain dots (\".\")"
 }
 # Now try deleting an image:
 $ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
-  'your-cdn.xyz/api?file=my/subdir/cat.png'|jq
+  'your-cdn.xyz/api?file=my/subdir/cat.png'
 {
   "success": false,
   "error": "file path must be exactly two levels deep (dir/file.ext)"
@@ -158,7 +156,7 @@ $ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
 # Whoops! You typed a / instead of a -.
 # That's OK, mistakes are part of life. Let's try again:
 $ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
-  'your-cdn.xyz/api?file=my-subdir/cat.png'|jq
+  'your-cdn.xyz/api?file=my-subdir/cat.png'
 {
   "success": true,
   "path": "my-subdir/cat.png"
