@@ -46,7 +46,69 @@ Scale `img/cat.jpg` by 50%, then crop it down to 150 x 150 pixels:
 
 #### Resize operations
 
-TODO
+Available image resize operations are shown below in the form:
+
+```
+<op>,<arg:type>
+```
+
+Most `op`s have aliases, e.g. `w` for `resize_to_width`. These are shown below as multiple lines.
+
+##### Resize to width
+
+```
+resize_to_width,<width:int>
+w,<width:int>
+```
+
+Scale to `width`, preserving aspect ratio.
+
+##### Resize to height
+
+```
+resize_to_height,<height:int>
+h,<height:int>
+```
+
+Scale to `height`, preserving aspect ratio.
+
+##### Resize to long side
+
+```
+resize_to_long_side,length
+long,length
+```
+
+Resize longer dimension (original width or height) to `length`, preserving aspect ratio.
+
+##### Resize to short side
+
+```
+resize_to_short_side,<length:int>
+short,<length:int>
+```
+
+Resize shorter dimension (original width or height) to `length`, preserving aspect ratio.
+
+##### Crop
+
+```
+crop,<x:int>,<y:int>
+c,<x:int>,<y:int>
+```
+
+Scale as close as possible to `x` by `y` pixels, then crop to `x` by `y` pixels, centered.
+
+##### Scale
+
+```
+s,<percent:int>
+scale,<percent:int>
+```
+
+Scale by `min(percent, MAX_RESIZE_PERCENT)`, preserving aspect ratio. Set `MAX_RESIZE_PERCENT` in the environment to configure; default is 100.
+
+**NOTE:** The `min()` is performed so that an accidentally or maliciously huge `percent` does not take down the server by hogging resources.
 
 ### Example from the CLI
 
