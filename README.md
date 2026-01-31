@@ -224,3 +224,11 @@ Locally:
 export IMAGES_ROOT=$(pwd)/dev
 php -S localhost:9001 public/index.php
 ```
+
+Run `bin/download-samples` to download a few large public-domain images from WikiMedia Commons (about 41 MB total) into `$IMAGES_ROOT` (defaults to `./img`).
+
+## Running tests
+
+```
+composer test
+```
