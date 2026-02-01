@@ -7,7 +7,8 @@ use Gumlet\ImageResizeException;
 use Simulacrum\Api;
 use Simulacrum\ParseError;
 
-if (substr($_SERVER['PATH_INFO'], 0, 4) === '/api') {
+$path = $_SERVER['PATH_INFO'] ?? '';
+if (substr($path, 0, 4) === '/api') {
   $res = Api\handle([
     'http_method' => $_SERVER['REQUEST_METHOD'],
     'path'        => $_SERVER['PATH_INFO'],
