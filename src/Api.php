@@ -25,22 +25,27 @@ function handle(array $req) {
   $row = $result->fetchArray();
 
   if (!($row && password_verify($req['key'], $row['api_key']))) {
-    header('HTTP/1.1 401 Unauthorized');
-    echo error_body('Invalid or missing API key.');
-    exit;
+    return [
+      'status' => 401,
+      'body' => ['success' => false, 'error' => 'Invalid or missing API key.'],
+    ];
   }
 
   if (!is_writeable(IMAGES_ROOT) || !is_dir(IMAGES_ROOT)) {
-    header('HTTP/1.1 500 Internal Server Error');
-    echo error_body(sprintf('`%s` is not a writeable directory.', IMAGES_ROOT));
-    exit;
+    return [
+      'status' => 500,
+      'body' => [
+        'success' => false,
+        'error' => sprintf('`%s` is not a writeable directory.', IMAGES_ROOT),
+      ],
+    ];
   }
 
   $handler = ROUTES[$_SERVER['REQUEST_METHOD']][$req['path']] ?? null;
   if (!$handler) {
     return [
       'status' => 405,
-      'body'   => 'Invalid',
+      'body'   => ['success' => false, 'error' => 'No such API route'],
     ];
   }
 

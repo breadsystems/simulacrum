@@ -7,7 +7,7 @@ use Gumlet\ImageResizeException;
 use Simulacrum\Api;
 use Simulacrum\ParseError;
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+if (substr($_SERVER['PATH_INFO'], 0, 4) === '/api') {
   $res = Api\handle([
     'http_method' => $_SERVER['REQUEST_METHOD'],
     'path'        => $_SERVER['PATH_INFO'],
@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
   } else {
     header([
       400 => 'HTTP/1.1 400 Bad Request',
+      401 => 'HTTP/1.1 401 Unauthorized',
       404 => 'HTTP/1.1 404 Not Found',
       405 => 'HTTP/1.1 405 Method Not Allowed',
       500 => 'HTTP/1.1 500 Internal Server Error',
