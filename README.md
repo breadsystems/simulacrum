@@ -118,67 +118,6 @@ Scale by `min(percent, MAX_RESIZE_PERCENT)`, preserving aspect ratio. Set `MAX_R
 
 **NOTE:** The `min()` is performed so that an accidentally or maliciously huge `percent` does not take down the server by hogging resources.
 
-### Example from the CLI
-
-```sh
-$ curl --silent --upload-file ~/Pictures/cat.png -H 'X-Simulacrum-Key: [YOUR API KEY]' \
-  'your-cdn.xyz/api?file=my-subdir/cat.png'
-{
-  "success": true,
-  "path": "my-subdir/cat.png",
-  "mime_type": "image/png",
-  "width": 500,
-  "height": 400,
-  "bytes": 85547,
-  "new_dir": true
-}
-# ^ new_dir means `my-subdir` was created for you.
-# To replace an image, upload it again:
-$ curl --silent --upload-file ~/Pictures/cat.png -H 'X-Simulacrum-Key: [YOUR API KEY]' \
-  'your-cdn.xyz/api?file=my-subdir/cat.png'
-{
-  "success": true,
-  "path": "my-subdir/cat.png",
-  "mime_type": "image/png",
-  "width": 500,
-  "height": 400,
-  "bytes": 85547,
-  "new_dir": false
-}
-# ^ Same request, but this time new_dir is false.
-$
-# NOTE: Subdirectories cannot contain dots:
-$ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
-  'your-cdn.xyz/api?file=a.b.c/cat.png'
-{
-  "success": false,
-  "error": "Directory name cannot contain dots (\".\")"
-}
-# Now try deleting an image:
-$ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
-  'your-cdn.xyz/api?file=my/subdir/cat.png'
-{
-  "success": false,
-  "error": "file path must be exactly two levels deep (dir/file.ext)"
-}
-# Whoops! You typed a / instead of a -.
-# That's OK, mistakes are part of life. Let's try again:
-$ curl --silent -H 'X-Simulacrum-Key: [YOUR API KEY]' -XDELETE \
-  'your-cdn.xyz/api?file=my-subdir/cat.png'
-{
-  "success": true,
-  "path": "my-subdir/cat.png"
-}
-# It worked! The file was deleted and its path returned.
-# What happens if we try to delete it again?
-{
-  "success": false,
-  "error": "File does not exist or is not writeable."
-}
-```
-
-The `X-Simulacrum-Key` header should contain your API key. See **Setup**, below, for details.
-
 ### Upload API
 
 Simulacrum offers a simple REST API for uploading and deleting images on your server, as well as some barebones user management.
@@ -259,6 +198,55 @@ curl --silent -H "Authorization: Basic $(echo img:$KEY | base64)" -XDELETE ./cat
 | --------- | ------- | ----------------------------------------- |
 | `success` | Boolean | Whether or not the upload was successful. |
 | `path`    | String  | The (relative) path of the deleted file.  |
+
+### Full API example in the CLI
+
+```sh
+$ export AUTH_HEADER="Authorization: Basic $(echo my-subdir:$YOUR_API_KEY | base64)"
+# directory doubles as your username...           ^^^^^^^^^
+$ curl --silent --upload-file ~/Pictures/cat.png -H $AUTH_HEADER \
+  'your-cdn.xyz/api?file=cat.png'
+{
+  "success": true,
+  "path": "my-subdir/cat.png",
+  "mime_type": "image/png",
+  "width": 500,
+  "height": 400,
+  "bytes": 85547
+}
+# To replace an image, just upload it again with the same file name:
+$ curl --silent --upload-file ~/Pictures/cat2_final_-_FINAL\(1\).png -H $AUTH_HEADER \
+  'your-cdn.xyz/api?file=cat.png'
+{
+  "success": true,
+  "path": "my-subdir/cat.png",
+  "mime_type": "image/png",
+  "width": 500,
+  "height": 400,
+  "bytes": 85547
+}
+$
+# NOTE: Subdirectories cannot contain dots:
+$ curl --silent -H "Authorization: Basic $(echo a.b.c:$YOUR_API_KEY | base64)" -XDELETE \
+  'your-cdn.xyz/api?file=cat.png'
+{
+  "success": false,
+  "error": "Directory name cannot contain dots (\".\")"
+}
+# Now try deleting an image:
+$ curl --silent -H $AUTH_HEADER -XDELETE \
+  'your-cdn.xyz/api?file=my-subdir/cat.png'
+{
+  "success": true,
+  "path": "my-subdir/cat.png"
+}
+# It worked! The file was deleted and its path returned.
+# What happens if we try to delete it again?
+{
+  "success": false,
+  "error": "File does not exist or is not writeable."
+}
+```
 
 ## Setup
 
