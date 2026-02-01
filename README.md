@@ -16,7 +16,17 @@
 
 ### Requesting an image
 
-A valid request path takes the following form:
+Image URLs look like this:
+
+```
+yourdomain.xyz/subdir/width,1000/crop,300,300/cat.jpg
+```
+
+In this example, the original image `subdir/cat.jpg` is read from the filesystem (if it exists), then is scaled down to a width of 1000 pixels while preserving aspect ratio, and finally is cropped to 300 x 300 pixels.
+
+(The domain can, of course, be anything you want and will depend on your DNS setup.)
+
+Formally, a valid request path takes the following form:
 
 ```
 /<dir>/<op>+/<img>
@@ -27,8 +37,6 @@ A valid request path takes the following form:
 - `<img>` is the filename of your image, such as `cat.jpg`
 
 Each `op` takes the form of `<opname>[,<arg>+]`, where `<arg>+` is one or more comma-separated arguments for the operation.
-
-(The domain can, of course, be anything you want and will depend on your DNS setup.)
 
 #### Examples
 
