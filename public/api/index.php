@@ -4,6 +4,10 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Simulacrum\Upload;
 
+function error_body($message) {
+  return json_encode(['success' => false, 'error' => $message]);
+}
+
 $directory = $_SERVER['PHP_AUTH_USER'] ?? '';
 $key = trim($_SERVER['PHP_AUTH_PW'] ?? '');
 
@@ -13,15 +17,15 @@ $query->bindValue(':directory', $directory);
 $res = $query->execute();
 $row = $res->fetchArray();
 
-if (!(password_verify($key, $row['api_key']))) {
+if (!($row && password_verify($key, $row['api_key']))) {
   header('HTTP/1.1 401 Unauthorized');
-  echo "Invalid or missing API key.\n";
+  echo error_body('Invalid or missing API key.');
   exit;
 }
 
 if (!is_writeable(IMAGES_ROOT) || !is_dir(IMAGES_ROOT)) {
   header('HTTP/1.1 500 Internal Server Error');
-  echo sprintf("`%s` is not a writeable directory.\n", IMAGES_ROOT);
+  echo error_body(sprintf('`%s` is not a writeable directory.', IMAGES_ROOT));
   exit;
 }
 
