@@ -18,7 +18,7 @@
         "simulacrum:init": "bin/init.php"
     },
     "autoload": {
-        "files": ["src/lib.php", "src/Ops.php", "src/Upload.php"],
+        "files": ["src/lib.php", "src/Api.php", "src/Ops.php", "src/Upload.php"],
         "psr-4": {
             "Simulacrum\\": "src/"
         }

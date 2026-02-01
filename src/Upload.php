@@ -4,27 +4,6 @@ namespace Simulacrum\Upload;
 
 use finfo;
 
-define('ROUTES', [
-  'PUT'     => [
-    '/file' => upload_file::class,
-  ],
-  'DELETE'  => [
-    '/file' => delete_file::class,
-  ],
-]);
-
-function handle(array $req) : array {
-  $handler = ROUTES[$_SERVER['REQUEST_METHOD']][$req['path']] ?? null;
-  if (!$handler) {
-    return [
-      'status' => 405,
-      'body'   => 'Invalid',
-    ];
-  }
-
-  return $handler($req);
-}
-
 function delete_file(array $req) : array {
   if (empty($_GET['file'])) {
     return [
