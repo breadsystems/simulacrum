@@ -15,31 +15,8 @@ function delete_file(array $req) : array {
     ];
   }
 
-  // Filter out blank dirs as a result of duplicate or leading/trailing slashes.
-  $segments = array_filter(explode('/', $_GET['file']));
-
-  if (count($segments) !== 2) {
-    return [
-      'status'    => 400,
-      'body'      => [
-        'success' => false,
-        'error'   => 'file path must be exactly two levels deep (dir/file.ext)',
-      ],
-    ];
-  }
-
-  [$dir, $file] = $segments;
-
-  if (strpos($dir, '.') !== false) {
-    return [
-      'status'    => 400,
-      'body'      => [
-        'success' => false,
-        'error'   => 'Directory name cannot contain dots (".")',
-      ],
-    ];
-  }
-
+  $dir  = $req['directory'];
+  $file = basename($_GET['file']);
   $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir, $file]);
 
   if (!file_exists($path) || !is_writeable($path)) {
@@ -59,14 +36,14 @@ function delete_file(array $req) : array {
       'status'    => 500,
       'body'      => [
         'success' => false,
-        'error'   => 'Directory name cannot contain dots (".")',
+        'error'   => 'Unexpected error.',
       ],
     ];
   }
 
   return [
-    'status' => 200,
-    'body'   => [
+    'status'    => 200,
+    'body'      => [
       'success' => true,
       'path'    => implode(DIRECTORY_SEPARATOR, [$dir, $file]),
     ],
