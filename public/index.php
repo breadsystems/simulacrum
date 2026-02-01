@@ -32,7 +32,6 @@ if ($staleAt > $lastModified) {
 
 try {
   $image = Simulacrum\execute($chain);
-  $stdout = fopen('php://stdout', 'r');
   header('Last-Modified: ' . date('D, d M Y h:m:s \G\M\T', $lastModified));
   header('Cache-Control: public, max-age=' . MAX_AGE . ', immutable');
 } catch (ImageResizeException $e) {
