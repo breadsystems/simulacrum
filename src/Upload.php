@@ -4,24 +4,28 @@ namespace Simulacrum\Upload;
 
 use finfo;
 
-define('API_METHODS', [
-  'PUT'    => upload::class,
-  'DELETE' => delete::class,
+define('ROUTES', [
+  'PUT'     => [
+    '/file' => upload_file::class,
+  ],
+  'DELETE'  => [
+    '/file' => delete_file::class,
+  ],
 ]);
 
 function handle(array $req) : array {
-  $handler = API_METHODS[$_SERVER['REQUEST_METHOD']] ?? null;
+  $handler = ROUTES[$_SERVER['REQUEST_METHOD']][$req['path']] ?? null;
   if (!$handler) {
     return [
-      'status' => 400,
-      'body'   => 'NOPE',
+      'status' => 405,
+      'body'   => 'Invalid',
     ];
   }
 
   return $handler($req);
 }
 
-function delete(array $req) : array {
+function delete_file(array $req) : array {
   if (empty($_GET['file'])) {
     return [
       'status'    => 400,
@@ -90,7 +94,7 @@ function delete(array $req) : array {
   ];
 }
 
-function upload(array $req) : array {
+function upload_file(array $req) : array {
   $img = file_get_contents('php://input');
   if (!$img) {
     return [
@@ -125,25 +129,13 @@ function upload(array $req) : array {
       'status'    => 400,
       'body'      => [
         'success' => false,
-        'error'   => 'You must specify a filename, i.e. ?file=dir/file.ext',
+        'error'   => 'You must specify a filename, i.e. ?file=file.ext',
       ],
     ];
   }
 
-  // Filter out blank dirs as a result of duplicate or leading/trailing slashes.
-  $segments = array_filter(explode('/', $_GET['file']));
-
-  if (count($segments) !== 2) {
-    return [
-      'status'    => 400,
-      'body'      => [
-        'success' => false,
-        'error'   => 'file path must be exactly two levels deep (dir/file.ext)',
-      ],
-    ];
-  }
-
-  [$dir, $file] = $segments;
+  $dir  = $req['directory'];
+  $file = basename($_GET['file']);
 
   if (strpos($dir, '.') !== false) {
     return [
@@ -157,10 +149,9 @@ function upload(array $req) : array {
 
   $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir, $file]);
 
-  $newDir = false;
+  // TODO mkdir in /dir endpoint
   if (!is_dir(dirname($path))) {
     mkdir(dirname($path));
-    $newDir = true;
   }
 
   $bytes = file_put_contents($path, $img);
@@ -186,7 +177,6 @@ function upload(array $req) : array {
       'width'     => $width,
       'height'    => $height,
       'bytes'     => $bytes,
-      'new_dir'   => $newDir,
     ],
   ];
 }
