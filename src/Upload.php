@@ -4,48 +4,101 @@ namespace Simulacrum\Upload;
 
 use finfo;
 
-function delete_file(array $req) : array {
-  if (empty($_GET['file'])) {
+function user_can(string $role, array $user) : bool {
+  return array_search($role, $user['roles']) !== false;
+}
+
+function gen_key(int $len = 64) : string {
+  $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  $key = '';
+  $i = 0;
+  while ($i < $len) {
+    $key .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+    $i++;
+  }
+  return $key;
+}
+
+function create_directory(array $req) : array {
+  if (!user_can('create_directory', $req['user'])) {
+    return [
+      'status'    => 401,
+      'body'      => [
+        'success' => false,
+        'error'   => 'Not allowed: missing create_directory role',
+      ],
+    ];
+  }
+
+  $dir = trim($_GET['directory'] ?? '');
+  if (!$dir) {
     return [
       'status'    => 400,
       'body'      => [
         'success' => false,
-        'error'   => 'You must specify a filename, i.e. ?file=dir/file.ext',
+        'error'   => 'Invalid or missing directory param',
       ],
     ];
   }
 
-  $dir  = $req['directory'];
-  $file = basename($_GET['file']);
-  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir, $file]);
-
-  if (!file_exists($path) || !is_writeable($path)) {
+  if (strpos($dir, '.') !== false) {
     return [
-      'status'    => 404,
+      'status'    => 400,
       'body'      => [
         'success' => false,
-        'error'   => 'File does not exist or is not writeable.',
+        'error'   => 'Directory name cannot contain dots (".")',
       ],
     ];
   }
 
-  $deleted = unlink($path);
+  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir]);
 
-  if (!$deleted) {
+  if (is_dir($path)) {
+    return [
+      'status'    => 400,
+      'body'      => [
+        'success' => false,
+        'error'   => 'Directory already exists',
+      ],
+    ];
+  }
+
+  $insert = $req['db']->prepare(
+    'INSERT INTO directories (directory, api_key, roles) VALUES (:directory, :api_key, :roles)'
+  );
+  $insert->bindValue(':directory', $dir);
+
+  $key = gen_key();
+  $insert->bindValue(':api_key', password_hash($key, PASSWORD_DEFAULT));
+
+  // User cannot grant roles they don't have themself.
+  $roles = array_filter(
+    array_map('trim', explode(',', $_GET['roles'] ?? '')),
+    fn($role) => user_can($role, $req['user']),
+  );
+  if ($roles) {
+    $insert->bindValue(':roles', implode(',', $roles));
+  }
+
+  // DO THE THING.
+  $result = $insert->execute();
+  if (!$result) {
     return [
       'status'    => 500,
       'body'      => [
         'success' => false,
-        'error'   => 'Unexpected error.',
+        'error'   => 'Unexpected error',
       ],
     ];
   }
+  mkdir($path, 0755);
 
   return [
-    'status'    => 200,
-    'body'      => [
-      'success' => true,
-      'path'    => implode(DIRECTORY_SEPARATOR, [$dir, $file]),
+    'status'      => 200,
+    'body'        => [
+      'success'   => true,
+      'directory' => $dir,
+      'api_key'   => $key,
     ],
   ];
 }
@@ -133,6 +186,56 @@ function upload_file(array $req) : array {
       'width'     => $width,
       'height'    => $height,
       'bytes'     => $bytes,
+    ],
+  ];
+}
+
+function delete_directory(array $req) : array {
+  // TODO
+}
+
+function delete_file(array $req) : array {
+  if (empty($_GET['file'])) {
+    return [
+      'status'    => 400,
+      'body'      => [
+        'success' => false,
+        'error'   => 'You must specify a filename, i.e. ?file=dir/file.ext',
+      ],
+    ];
+  }
+
+  $dir  = $req['directory'];
+  $file = basename($_GET['file']);
+  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir, $file]);
+
+  if (!file_exists($path) || !is_writeable($path)) {
+    return [
+      'status'    => 404,
+      'body'      => [
+        'success' => false,
+        'error'   => 'File does not exist or is not writeable.',
+      ],
+    ];
+  }
+
+  $deleted = unlink($path);
+
+  if (!$deleted) {
+    return [
+      'status'    => 500,
+      'body'      => [
+        'success' => false,
+        'error'   => 'Unexpected error.',
+      ],
+    ];
+  }
+
+  return [
+    'status'    => 200,
+    'body'      => [
+      'success' => true,
+      'path'    => implode(DIRECTORY_SEPARATOR, [$dir, $file]),
     ],
   ];
 }
