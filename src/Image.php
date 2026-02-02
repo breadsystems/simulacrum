@@ -35,5 +35,7 @@ function handle(array $req) {
     exit;
   }
 
+  header('X-Content-Type-Options: nosniff');
+
   return $image->output($chain['type']);
 }
