@@ -6,7 +6,7 @@ use Gumlet\ImageResize;
 
 use Simulacrum\Ops;
 
-define('IMAGES_ROOT', getenv('IMAGES_ROOT'));
+define('STORAGE_ROOT', getenv('STORAGE_ROOT'));
 
 define('TOKEN_MAP', [
   'c'                    => Ops\crop::class,
@@ -78,7 +78,7 @@ function parse_uri(string $uri, array $opts = []) : array {
   $stub     = substr($filename, 0, $dotPos);
   $ext      = substr($filename, $dotPos + 1);
 
-  $path = sprintf('%s/%s/%s', IMAGES_ROOT, $dir, $filename);
+  $path = sprintf('%s/%s/%s', STORAGE_ROOT, $dir, $filename);
   $stat = is_readable($path) ? stat($path) : [];
 
   return [
@@ -124,7 +124,7 @@ function parse_ops(array $ops, string $opStr) {
 function execute(array $chain) {
   $path = sprintf(
     '%s/%s/%s',
-    IMAGES_ROOT,
+    STORAGE_ROOT,
     $chain['directory'] ?? '',
     $chain['filename'] ?? ''
   );
@@ -139,7 +139,7 @@ function execute(array $chain) {
 
       $path = sprintf(
         '%s/%s/%s.%s',
-        IMAGES_ROOT,
+        STORAGE_ROOT,
         $chain['directory'] ?? '',
         $chain['stub'] ?? '',
         $ext

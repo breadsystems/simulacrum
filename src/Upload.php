@@ -51,7 +51,7 @@ function create_directory(array $req) : array {
     ];
   }
 
-  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir]);
+  $path = implode(DIRECTORY_SEPARATOR, [STORAGE_ROOT, $dir]);
 
   if (is_dir($path)) {
     return [
@@ -171,7 +171,7 @@ function upload_file(array $req) : array {
     ];
   }
 
-  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir, $file]);
+  $path = implode(DIRECTORY_SEPARATOR, [STORAGE_ROOT, $dir, $file]);
 
   $bytes = file_put_contents($path, $img);
 
@@ -240,7 +240,7 @@ function delete_directory(array $req) : array {
     ];
   }
 
-  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir]);
+  $path = implode(DIRECTORY_SEPARATOR, [STORAGE_ROOT, $dir]);
   try {
     rrmdir($path);
   } catch (Exception $e) {
@@ -275,7 +275,7 @@ function delete_file(array $req) : array {
 
   $dir  = $req['directory'];
   $file = basename($req['query_params']['file']);
-  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir, $file]);
+  $path = implode(DIRECTORY_SEPARATOR, [STORAGE_ROOT, $dir, $file]);
 
   if (!file_exists($path) || !is_writeable($path)) {
     return [

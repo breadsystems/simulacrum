@@ -41,12 +41,12 @@ function handle(array $req) {
   $req['user'] = expand_user($user);
   $req['db']   = $db;
 
-  if (!is_writeable(IMAGES_ROOT) || !is_dir(IMAGES_ROOT)) {
+  if (!is_writeable(STORAGE_ROOT) || !is_dir(STORAGE_ROOT)) {
     return [
       'status' => 500,
       'body' => [
         'success' => false,
-        'error' => sprintf('`%s` is not a writeable directory.', IMAGES_ROOT),
+        'error' => sprintf('`%s` is not a writeable directory.', STORAGE_ROOT),
       ],
     ];
   }
