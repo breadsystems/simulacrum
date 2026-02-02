@@ -30,7 +30,7 @@ function create_directory(array $req) : array {
     ];
   }
 
-  $dir = trim($_GET['directory'] ?? '');
+  $dir = trim($req['query_params']['directory'] ?? '');
   if (!$dir) {
     return [
       'status'    => 400,
@@ -73,7 +73,7 @@ function create_directory(array $req) : array {
 
   // User cannot grant roles they don't have themself.
   $roles = array_filter(
-    array_map('trim', explode(',', $_GET['roles'] ?? '')),
+    array_map('trim', explode(',', $req['query_params']['roles'] ?? '')),
     fn($role) => user_can($role, $req['user']),
   );
   if ($roles) {
@@ -133,7 +133,7 @@ function upload_file(array $req) : array {
     ];
   }
 
-  if (empty($_GET['file'])) {
+  if (empty($req['query_params']['file'])) {
     return [
       'status'    => 400,
       'body'      => [
@@ -144,7 +144,7 @@ function upload_file(array $req) : array {
   }
 
   $dir  = $req['directory'];
-  $file = basename($_GET['file']);
+  $file = basename($req['query_params']['file']);
 
   if (strpos($dir, '.') !== false) {
     return [
@@ -240,7 +240,7 @@ function delete_directory(array $req) : array {
 }
 
 function delete_file(array $req) : array {
-  if (empty($_GET['file'])) {
+  if (empty($req['query_params']['file'])) {
     return [
       'status'    => 400,
       'body'      => [
@@ -251,7 +251,7 @@ function delete_file(array $req) : array {
   }
 
   $dir  = $req['directory'];
-  $file = basename($_GET['file']);
+  $file = basename($req['query_params']['file']);
   $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir, $file]);
 
   if (!file_exists($path) || !is_writeable($path)) {

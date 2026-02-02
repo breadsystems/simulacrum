@@ -8,11 +8,12 @@ use Simulacrum\Image;
 $path = $_SERVER['PATH_INFO'] ?? '';
 if (substr($path, 0, 4) === '/api') {
   $res = Api\handle([
-    'http_method' => $_SERVER['REQUEST_METHOD'],
-    'path'        => $_SERVER['PATH_INFO'],
-    'directory'   => $_SERVER['PHP_AUTH_USER'] ?? '',
-    'key'         => trim($_SERVER['PHP_AUTH_PW'] ?? ''),
-    'image_data'  => file_get_contents('php://input'),
+    'http_method'  => $_SERVER['REQUEST_METHOD'],
+    'query_params' => $_GET,
+    'path'         => $_SERVER['PATH_INFO'],
+    'directory'    => $_SERVER['PHP_AUTH_USER'] ?? '',
+    'key'          => trim($_SERVER['PHP_AUTH_PW'] ?? ''),
+    'image_data'   => file_get_contents('php://input'),
   ]);
 
   header('Content-Type: application/json');
