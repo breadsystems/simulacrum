@@ -200,6 +200,19 @@ function upload_file(array $req) : array {
   ];
 }
 
+function rrmdir(string $path) {
+    if (!is_dir($path)) {
+        return false;
+    }
+
+    $files = array_diff(scandir($path), ['.', '..']);
+    foreach ($files as $file) {
+        unlink(implode(DIRECTORY_SEPARATOR, [$path, $file]));
+    }
+
+    return rmdir($path);
+}
+
 function delete_directory(array $req) : array {
   if (!user_can('create_directory', $req['user'])) {
     return [
@@ -229,7 +242,7 @@ function delete_directory(array $req) : array {
 
   $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir]);
   try {
-    exec(sprintf("rm -rf %s", escapeshellarg($path)));
+    rrmdir($path);
   } catch (Exception $e) {
     return [
       'status'    => 500,
