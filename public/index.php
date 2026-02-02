@@ -15,9 +15,8 @@ if (substr($path, 0, 4) === '/api') {
     'image_data'  => file_get_contents('php://input'),
   ]);
 
-  if ($res['status'] === 200) {
-    header('Content-Type: application/json');
-  } else {
+  header('Content-Type: application/json');
+  if ($res['status'] !== 200) {
     header([
       400 => 'HTTP/1.1 400 Bad Request',
       401 => 'HTTP/1.1 401 Unauthorized',
