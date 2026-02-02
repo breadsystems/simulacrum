@@ -21,6 +21,7 @@
         "files": [
           "src/lib.php",
           "src/Api.php",
+          "src/Database.php",
           "src/Image.php",
           "src/Ops.php",
           "src/Upload.php"

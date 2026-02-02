@@ -3,6 +3,10 @@
 
 namespace Simulacrum;
 
+use Simulacrum\Database;
+
+require 'vendor/autoload.php';
+
 $dir = getenv('SIMULACRUM_DEFAULT_DIR') ?: 'simulacrum';
 $password = getenv('SIMULACRUM_DEFAULT_API_KEY');
 
@@ -11,7 +15,7 @@ if (!$password) {
   exit(1);
 }
 
-$db = new \SQLite3('simulacrum.db', SQLITE3_OPEN_READWRITE|SQLITE3_OPEN_CREATE);
+$db = Database\db(SQLITE3_OPEN_READWRITE|SQLITE3_OPEN_CREATE);
 
 /*
  * NOTE: ONE USER <=> ONE DIRECTORY
@@ -39,3 +43,5 @@ $insert->bindValue(':directory', $dir, SQLITE3_TEXT);
 $insert->bindValue(':api_key', password_hash($password, PASSWORD_DEFAULT), SQLITE3_TEXT);
 $insert->bindValue(':roles', 'create_directory');
 $insert->execute();
+
+echo "Done.\n";

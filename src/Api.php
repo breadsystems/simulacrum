@@ -2,6 +2,7 @@
 
 namespace Simulacrum\Api;
 
+use Simulacrum\Database;
 use Simulacrum\Upload;
 
 define('ROUTES', [
@@ -25,7 +26,7 @@ function expand_user(array $user) : array {
 }
 
 function handle(array $req) {
-  $db = new \SQLite3('simulacrum.db', SQLITE3_OPEN_READWRITE);
+  $db = Database\db();
   $query = $db->prepare('SELECT * FROM directories WHERE directory = :directory');
   $query->bindValue(':directory', $req['directory']);
   $result = $query->execute();
