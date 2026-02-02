@@ -5,7 +5,7 @@ namespace Simulacrum\Upload;
 use finfo;
 
 function user_can(string $role, array $user) : bool {
-  return array_search($role, $user['roles']) !== false;
+  return in_array($role, $user['roles'], true);
 }
 
 function gen_key(int $len = 64) : string {
@@ -145,6 +145,7 @@ function upload_file(array $req) : array {
 
   $dir  = $req['directory'];
   $file = basename($req['query_params']['file']);
+  $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
   if (strpos($dir, '.') !== false) {
     return [
@@ -156,12 +157,21 @@ function upload_file(array $req) : array {
     ];
   }
 
-  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir, $file]);
-
-  // TODO mkdir in /dir endpoint
-  if (!is_dir(dirname($path))) {
-    mkdir(dirname($path));
+  $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'tiff'];
+  if (!in_array($ext, $allowedExtensions, true)) {
+    return [
+      'status'    => 400,
+      'body'      => [
+        'success' => false,
+        'error'   => sprintf(
+          'Invalid file extension. Must be one of: ',
+          implode(', ', $allowedExtensions),
+        ),
+      ],
+    ];
   }
+
+  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir, $file]);
 
   $bytes = file_put_contents($path, $img);
 
