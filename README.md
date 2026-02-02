@@ -202,9 +202,7 @@ curl --silent -H "Authorization: Basic $(echo img:$KEY | base64)" -XDELETE ./cat
 ### Full API example in the CLI
 
 ```sh
-$ export AUTH_HEADER="Authorization: Basic $(echo my-subdir:$YOUR_API_KEY | base64)"
-# directory doubles as your username...           ^^^^^^^^^
-$ curl --silent --upload-file ~/Pictures/cat.png -H $AUTH_HEADER \
+$ curl --silent --upload-file ~/Pictures/cat.png -u mysubdir:$API_KEY \
   'your-cdn.xyz/api?file=cat.png'
 {
   "success": true,
@@ -215,7 +213,7 @@ $ curl --silent --upload-file ~/Pictures/cat.png -H $AUTH_HEADER \
   "bytes": 85547
 }
 # To replace an image, just upload it again with the same file name:
-$ curl --silent --upload-file ~/Pictures/cat2_final_-_FINAL\(1\).png -H $AUTH_HEADER \
+$ curl --silent --upload-file ~/Pictures/cat2_final_-_FINAL\(1\).png -u mysubdir:$API_KEY \
   'your-cdn.xyz/api?file=cat.png'
 {
   "success": true,
@@ -234,7 +232,7 @@ $ curl --silent -H "Authorization: Basic $(echo a.b.c:$YOUR_API_KEY | base64)" -
   "error": "Directory name cannot contain dots (\".\")"
 }
 # Now try deleting an image:
-$ curl --silent -H $AUTH_HEADER -XDELETE \
+$ curl --silent -u mysubdir:$API_KEY -XDELETE \
   'your-cdn.xyz/api?file=my-subdir/cat.png'
 {
   "success": true,
