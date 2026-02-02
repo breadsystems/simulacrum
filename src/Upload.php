@@ -191,7 +191,52 @@ function upload_file(array $req) : array {
 }
 
 function delete_directory(array $req) : array {
-  // TODO
+  if (!user_can('create_directory', $req['user'])) {
+    return [
+      'status'    => 401,
+      'body'      => [
+        'success' => false,
+        'error'   => 'Not allowed: missing create_directory role',
+      ],
+    ];
+  }
+
+  $dir = $req['user']['directory'];
+
+  $delete = $req['db']->prepare('DELETE FROM directories WHERE directory = :directory');
+  $delete->bindValue(':directory', $dir);
+
+  $result = $delete->execute();
+  if (!$result) {
+    return [
+      'status'    => 500,
+      'body'      => [
+        'success' => false,
+        'error'   => 'Unexpected error. Try again?',
+      ],
+    ];
+  }
+
+  $path = implode(DIRECTORY_SEPARATOR, [IMAGES_ROOT, $dir]);
+  try {
+    exec(sprintf("rm -rf %s", escapeshellarg($path)));
+  } catch (Exception $e) {
+    return [
+      'status'    => 500,
+      'body'      => [
+        'success' => false,
+        'error'   => 'Unexpected error. Try again?',
+      ],
+    ];
+  }
+
+  return [
+    'status'      => 200,
+    'body'        => [
+      'success'   => true,
+      'directory' => $dir,
+    ],
+  ];
 }
 
 function delete_file(array $req) : array {
