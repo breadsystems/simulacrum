@@ -28,6 +28,12 @@ $db = new \SQLite3('simulacrum.db', SQLITE3_OPEN_READWRITE|SQLITE3_OPEN_CREATE);
 // A user can have many directories
 $db->exec('CREATE TABLE IF NOT EXISTS directories (directory TEXT, api_key TEXT, roles TEXT)');
 
+// NOTE: to forward args from Composer use --, e.g.:
+// composer simulacrum:init -- --extra --args
+if (array_search('--delete', $argv)) {
+  $db->exec('DELETE FROM directories');
+}
+
 $insert = $db->prepare('INSERT INTO directories (directory, api_key, roles) VALUES (:directory, :api_key, :roles)');
 $insert->bindValue(':directory', $dir, SQLITE3_TEXT);
 $insert->bindValue(':api_key', password_hash($password, PASSWORD_DEFAULT), SQLITE3_TEXT);
